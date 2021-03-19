@@ -37,6 +37,7 @@ func promptKeys(f *ini.File) (string, error) {
   prompt := promptui.Select{
     Label: "Select the key to Default",
     Items: GetKeys(f),
+    Size: 15,
   }
 
   _, result, err := prompt.Run()
