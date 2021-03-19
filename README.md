@@ -4,3 +4,6 @@ Manage your AWS Keys in ~/.aws/credentials with a CLI UI. This currently support
 
 # Building
 The easiest way to use this is to run the build script at the root. It'll currently create a linux and darwin executables.
+
+# Using
+After building, copy the file to a location in your $PATH. The menu should guide you.
