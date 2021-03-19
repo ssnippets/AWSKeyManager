@@ -29,39 +29,45 @@ type Credential struct {
 const (
 	AWS_CREDENTIAL_FILENAME = "/.aws/credentials"
 )
+func getCredentialsFile() string {
+  home, err := os.UserHomeDir()
+
+	if err != nil {
+		fmt.Printf("Failed to get user home folder: %v\n", err)
+		os.Exit(1)
+	}
+  return home + AWS_CREDENTIAL_FILENAME
+
+}
+func loadCredentials() *ini.File {
+  cfg, err := ini.Load(getCredentialsFile())
+
+	if err != nil {
+		fmt.Printf("Failed to read credentials file: %v\n", err)
+		os.Exit(1)
+	}
+  return cfg
+}
 
 func main() {
-	home, err := os.UserHomeDir()
-
-	if err != nil {
-		fmt.Printf("Failed to get user home folder: %v", err)
-		os.Exit(1)
+	for true {
+		cfg := loadCredentials()
+		runUI(cfg)
+		SaveCreds(cfg)
 	}
+}
 
-	cfg, err := ini.Load(home + AWS_CREDENTIAL_FILENAME)
-	if err != nil {
-		fmt.Printf("Failed to read credentials file: %v", err)
-		os.Exit(1)
-	}
-
-	if err != nil {
-		fmt.Printf("Error mapping credentials: %v", err)
-		os.Exit(1)
-	}
-
-	secs := cfg.Sections()
+func GetKeys(f *ini.File) []string {
+	secs := f.Sections()
+	names := make([]string, len(secs))
 	for i, s := range secs {
-		fmt.Println(i, s.Name())
+		names[i] = s.Name()
 	}
-
-	SetDefault(cfg, "snoise")
-
-	_ = AddKey(cfg, "Mile Two New", "key name", "secret!!")
-	SaveCreds(cfg)
+	return names
 }
 
 func SaveCreds(f *ini.File) error {
-	err := f.SaveTo("./creds.ini")
+	err := f.SaveTo(getCredentialsFile())
 	if err != nil {
 		fmt.Printf("Error saving credentials: %v", err)
 		return err
@@ -97,9 +103,9 @@ func AddKey(f *ini.File, name string, key string, secret string) error {
 
 	c := &Credential{key, secret}
 
-  err = f.Section(name).ReflectFrom(c)
+	err = f.Section(name).ReflectFrom(c)
 	if err != nil {
-    fmt.Printf("Error in mapping: %v", err);
+		fmt.Printf("Error in mapping: %v", err)
 		return errors.New("Key name already exists")
 	}
 
