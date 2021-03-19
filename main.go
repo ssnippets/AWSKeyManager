@@ -29,24 +29,25 @@ type Credential struct {
 const (
 	AWS_CREDENTIAL_FILENAME = "/.aws/credentials"
 )
+
 func getCredentialsFile() string {
-  home, err := os.UserHomeDir()
+	home, err := os.UserHomeDir()
 
 	if err != nil {
 		fmt.Printf("Failed to get user home folder: %v\n", err)
 		os.Exit(1)
 	}
-  return home + AWS_CREDENTIAL_FILENAME
+	return home + AWS_CREDENTIAL_FILENAME
 
 }
 func loadCredentials() *ini.File {
-  cfg, err := ini.Load(getCredentialsFile())
+	cfg, err := ini.Load(getCredentialsFile())
 
 	if err != nil {
 		fmt.Printf("Failed to read credentials file: %v\n", err)
 		os.Exit(1)
 	}
-  return cfg
+	return cfg
 }
 
 func main() {
