@@ -24,6 +24,7 @@ func runUI(f *ini.File) {
 	switch result {
 	case options[0]: //Set Default Key
 		requestNewKeyToDefault(f)
+		os.Exit(0)
 	case options[1]: //Delete Key
 		requestKeyToDelete(f)
 	case options[2]: //Add a Key
